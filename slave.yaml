@@ -1,0 +1,29 @@
+esphome:
+  name: modbus-slave
+
+esp32:
+  board: esp32dev
+
+logger:
+  level: DEBUG
+
+uart:
+  - id: uart_modbus
+    tx_pin: GPIO17
+    rx_pin: GPIO16
+    baud_rate: 9600
+    # flow_control_pin: GPIO4 # uncomment if DE & RE pins are exposed on module
+
+modbus:
+  id: modbus_bus
+  uart_id: uart_modbus
+  role: server
+
+modbus_server:
+  - modbus_id: modbus_bus
+    address: 0x4
+    registers:
+      - address: 0x0002
+        value_type: U_WORD
+        read_lambda: |-
+          return 42.0;

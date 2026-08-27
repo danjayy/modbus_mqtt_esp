@@ -1,0 +1,41 @@
+esphome:
+  name: modbus-master
+
+esp32:
+  board: esp32dev
+
+logger:
+  level: DEBUG
+
+# Configure hardware UART port
+uart:
+  - id: uart_modbus
+    tx_pin: GPIO17
+    rx_pin: GPIO16
+    baud_rate: 9600
+    # flow_control_pin: GPIO4 # uncomment if DE & RE pins are exposed on module
+
+# Base Modbus handler
+modbus:
+  id: modbus_master_bus
+  uart_id: uart_modbus
+  role: client
+
+# Modbus Controller configured to poll Slave ID 1
+modbus_controller:
+  - id: slave_device_1
+    modbus_id: modbus_master_bus
+    address: 0x4
+    setup_priority: -10
+    update_interval: 2s
+
+# Sensor component to read holding register 1
+sensor:
+  - platform: modbus_controller
+    modbus_controller_id: slave_device_1
+    name: "Slave Register Value"
+    register_type: holding
+    address: 0x0002
+    value_type: U_WORD
+    unit_of_measurement: "V"
+    # update_interval: 5s
