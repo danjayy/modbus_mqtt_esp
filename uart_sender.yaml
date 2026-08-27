@@ -1,0 +1,20 @@
+esphome:
+  name: rs485_sender
+
+esp32:
+  board: esp32dev
+
+logger:
+
+uart:
+  id: uart_rs485
+  tx_pin: GPIO17
+  rx_pin: GPIO16
+  baud_rate: 9600
+
+interval:
+  - interval: 2s
+    then:
+      - lambda: |-
+          id(uart_rs485).write_str("Hello\r\n");
+          ESP_LOGI("UART", "Sent: Hello");
